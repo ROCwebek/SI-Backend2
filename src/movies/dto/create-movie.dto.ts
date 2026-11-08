@@ -1,0 +1,12 @@
+import { IsString } from 'class-validator';
+import { ValidationPipe } from '@nestjs/common';
+
+export class CreateMovieDto {
+    @IsString()
+    title: string;
+
+    release_year: number;
+    description: string | null;
+    runtime_minutes: number | null;
+    poster_url: string | null;
+}
