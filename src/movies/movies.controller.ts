@@ -4,13 +4,14 @@ import type { Movie } from './types/movie.type.js';
 import { CreateMovieDto } from './dto/create-movie.dto.js';
 import { UpdateMovieDto } from './dto/update-movie.dto.js';
 import { HttpCode } from '@nestjs/common';
+import { MovieEntity } from './entities/movie.entity.js';
 
 @Controller('movies')
 export class MoviesController {
     constructor(private readonly moviesService: MoviesService) {}
 
     @Get()
-        getAllMovies(): Movie[] {
+        getAllMovies(): Promise<MovieEntity[]> {
             return this.moviesService.getAllMovies()
         }
 

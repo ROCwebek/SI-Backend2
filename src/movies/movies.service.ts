@@ -4,15 +4,26 @@ import type { Movie } from './types/movie.type.js';
 import { CreateMovieDto } from './dto/create-movie.dto.js';
 import { v4 as uuidv4 } from 'uuid';
 import { UpdateMovieDto } from './dto/update-movie.dto.js';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { MovieEntity } from './entities/movie.entity.js';
 
 @Injectable()
 export class MoviesService {
-    getAllMovies(): Movie[] {
-        return movies
+
+    constructor(
+        @InjectRepository(MovieEntity)
+        private readonly movieRepository: Repository<MovieEntity>
+    ) {}
+
+    async getAllMovies(): Promise<MovieEntity[]> {
+        return this.movieRepository.find()
     }
 
-    getMovieById(id: string): Movie {
-        const movie = movies.find(movie => movie.movie_pk === id);
+    async getMovieById(id: string): Promise<MovieEntity> {
+        const movie = await this.movieRepository.findOneBy({
+            movie_pk: id
+        })
         
         if (!movie) {
            throw new NotFoundException("Ingen film blev fundet")
