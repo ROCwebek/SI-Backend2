@@ -1,6 +1,5 @@
 import { Controller, Get, Post, Param, Body, Patch, Delete } from '@nestjs/common';
 import { MoviesService } from './movies.service.js';
-import type { Movie } from './types/movie.type.js';
 import { CreateMovieDto } from './dto/create-movie.dto.js';
 import { UpdateMovieDto } from './dto/update-movie.dto.js';
 import { HttpCode } from '@nestjs/common';
