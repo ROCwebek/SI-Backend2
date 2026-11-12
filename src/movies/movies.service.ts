@@ -1,6 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { movies } from "./data/movies.data.js"
-import type { Movie } from './types/movie.type.js';
 import { CreateMovieDto } from './dto/create-movie.dto.js';
 import { v4 as uuidv4 } from 'uuid';
 import { UpdateMovieDto } from './dto/update-movie.dto.js';
@@ -32,21 +30,22 @@ export class MoviesService {
         return movie
     }
 
-    addMovie(movie: CreateMovieDto): Movie {
-        const newMovie: Movie = {
+    async addMovie(movie: CreateMovieDto): Promise<MovieEntity> {
+        const newMovie = this.movieRepository.create({
             ...movie,
             movie_pk: uuidv4(),
             description: movie.description ?? null,
             runtime_minutes: movie.runtime_minutes ?? null,
             poster_url: movie.poster_url ?? null
-        };
-
-        movies.push(newMovie)
-        return newMovie
+        });
+        
+        return this.movieRepository.save(newMovie);
     }
 
-    updateMovie(id: string, movie: UpdateMovieDto): Movie {
-        const existingMovie = movies.find(movie => movie.movie_pk === id)
+    async updateMovie(id: string, movie: UpdateMovieDto): Promise<MovieEntity> {
+        const existingMovie = await this.movieRepository.findOneBy({
+            movie_pk: id
+        })
 
         if (!existingMovie) {
             throw new NotFoundException("Ingen film at opdatere")
@@ -54,17 +53,17 @@ export class MoviesService {
 
         Object.assign(existingMovie, movie)
 
-        return existingMovie
+        return this.movieRepository.save(existingMovie)
     }
 
-    deleteMovie(id: string): void {
-        const index = movies.findIndex(movie => movie.movie_pk === id)
+    async deleteMovie(id: string): Promise<void> {
 
-        if (index === -1) {
+        const result = await this.movieRepository.delete({
+            movie_pk: id
+        })
+
+        if(result.affected === 0) {
             throw new NotFoundException("Ingen film at slette")
         }
-
-        movies.splice(index, 1)
-        
     }
 }

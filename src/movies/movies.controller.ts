@@ -16,23 +16,23 @@ export class MoviesController {
         }
 
     @Get(":id")
-    getMoviesById(@Param("id") id: string): Movie {
+    getMoviesById(@Param("id") id: string): Promise<MovieEntity> {
         return this.moviesService.getMovieById(id)
     }
 
     @Post()
-    addMovie(@Body() movie: CreateMovieDto): Movie {
+    addMovie(@Body() movie: CreateMovieDto): Promise<MovieEntity> {
         return this.moviesService.addMovie(movie);
     }
 
     @Patch(':id')
-    updateMovie(@Param("id") id: string, @Body() movie: UpdateMovieDto): Movie {
+    updateMovie(@Param("id") id: string, @Body() movie: UpdateMovieDto): Promise<MovieEntity> {
         return this.moviesService.updateMovie(id, movie)
     }
 
     @Delete(':id')
     @HttpCode(204)
-    deleteMovie(@Param("id") id: string): void {
+    deleteMovie(@Param("id") id: string): Promise<void> {
         return this.moviesService.deleteMovie(id)
     }
 
